@@ -1,5 +1,7 @@
 from django.core.validators import URLValidator
 from django.db import models
+from django.urls import reverse
+from django.utils import timezone
 
 from users.models import User
 
@@ -31,7 +33,7 @@ class Diary(models.Model):
     )
     date = models.DateField(
         verbose_name="Дата записи",
-        auto_now_add=True,
+        default=timezone.now,
     )
 
     image_file = models.ImageField(
@@ -64,3 +66,6 @@ class Diary(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.owner.email})"
+
+    def get_absolute_url(self):
+        return reverse("records:diary_detail", kwargs={"pk": self.pk})

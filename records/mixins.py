@@ -2,10 +2,10 @@ from django.http import HttpResponseForbidden
 
 
 class OwnerRequiredMixin:
-    """Только владелец объекта может его редактировать"""
+    """Только владелец записи может его редактировать"""
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.owner != request.user:
-            return HttpResponseForbidden("Не ваш объект!")
+            return HttpResponseForbidden("Не ваша запись!")
         return super().dispatch(request, *args, **kwargs)
