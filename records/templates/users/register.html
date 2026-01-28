@@ -32,23 +32,6 @@
                     {% endif %}
                 </div>
                 
-                <div class="form-group">
-                    <label for="name" class="form-label">
-                        <i class="fas fa-user"></i> Имя
-                    </label>
-                    <input type="text" id="name" name="name" 
-                           class="form-input {% if form.name.errors %}error{% endif %}" 
-                           placeholder="Ваше имя"
-                           required
-                           {% if form.name.value %}value="{{ form.name.value }}"{% endif %}>
-                    {% if form.name.errors %}
-                    <div class="field-error">
-                        {% for error in form.name.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
                 
                 <div class="form-row">
                     <div class="form-group form-col">
