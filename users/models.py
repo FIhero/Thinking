@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField("Email", max_length=254, unique=True)
-    phone = models.CharField("Телефон", max_length=15, blank=True, default="")
+    phone = models.CharField("Телефон", max_length=20, blank=True, default="")
     avatar = models.ImageField(
         upload_to="users/",
         blank=True,

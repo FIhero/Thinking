@@ -1,10 +1,603 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1 class="auth-title">С возвращением!</h1>
+            <p class="auth-subtitle">ヾ(=`ω´=)ノ”</p>
+        </div>
+
+            <form method="post" id="loginForm">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    Неверный email или пароль. Попробуйте еще раз.
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i> Email адрес
+                    </label>
+                    <input type="email" id="id_username" name="username" 
+                           class="form-input" 
+                           placeholder="example@mail.com"
+                           required
+                           {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
+                </div>
+                
+                <div class="form-group">
+                    <div class="password-header">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i> Пароль
+                        </label>
+                        <a href="#" class="forgot-password-link" id="forgotPasswordLink">
+                            Забыли пароль?
+                        </a>
+                    </div>
+                        <input type="password" id="password" name="password" 
+                               class="form-input password-input"
+                               placeholder="Введите ваш пароль"
+                               required>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span class="checkmark"></span>
+                        Запомнить меня
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <div class="auth-footer">
+                    <p>Еще нет аккаунта? <a href="{% url 'register' %}" class="auth-link">Зарегистрируйтесь</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-page {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background-color: #f2e5d2;
+    }
+    
+    .auth-container {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .auth-title {
+        font-size: 2.5rem;
+        color: #7a3741;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    
+    .auth-subtitle {
+        font-size: 1.2rem;
+        color: #b25c69;
+        opacity: 0.9;
+    }
+    
+    .auth-card {
+        background-color: transparent;
+        border: 3px solid #cfa17d;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(122, 55, 65, 0.1);
+    }
+    
+    .auth-form {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #bb818a;
+        border-radius: 10px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .password-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .forgot-password-link {
+        color: #b25c69;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+    }
+    
+    .forgot-password-link:hover {
+        color: #7a3741;
+        text-decoration: underline;
+    }
+    
+    .password-input-wrapper {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #bb818a;
+        border-radius: 10px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .password-input {
+        padding-right: 50px;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #bb818a;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 5px;
+        transition: color 0.3s ease;
+    }
+    
+    .toggle-password:hover {
+        color: #7a3741;
+    }
+    
+    .form-options {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+    }
+    
+    .checkbox-container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #7a3741;
+        user-select: none;
+    }
+    
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 24px;
+        width: 24px;
+        background-color: #f2e5d2;
+        border: 2px solid #bb818a;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .checkbox-container:hover input ~ .checkmark {
+        border-color: #7a3741;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: #b25c69;
+        border-color: #b25c69;
+    }
+    
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
+    
+    .checkbox-container .checkmark:after {
+        left: 7px;
+        top: 3px;
+        width: 8px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+    }
+    
+    .btn-login, .btn-register {
+        width: 100%;
+        padding: 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-login {
+        background: linear-gradient(to right, #b25c69, #bb818a);
+        color: #f2e5d2;
+        margin-top: 10px;
+    }
+    
+    .btn-login:hover {
+        background: linear-gradient(to right, #7a3741, #b25c69);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(122, 55, 65, 0.3);
+    }
+    
+    .btn-register {
+        background-color: transparent;
+        color: #7a3741;
+        border: 2px solid #7a3741;
+    }
+    
+    .btn-register:hover {
+        background-color: #7a3741;
+        color: #f2e5d2;
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(122, 55, 65, 0.2);
+    }
+    
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        color: #7a3741;
+        opacity: 0.7;
+    }
+    
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: rgba(122, 55, 65, 0.2);
+    }
+    
+    .auth-divider span {
+        padding: 0 15px;
+        font-size: 0.9rem;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(207, 161, 125, 0.3);
+    }
+    
+    .auth-footer p {
+        margin-bottom: 10px;
+        color: #7a3741;
+    }
+    
+    .small-text {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        line-height: 1.4;
+    }
+    
+    .auth-link {
+        color: #b25c69;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .auth-link:hover {
+        color: #7a3741;
+        text-decoration: underline;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+        background-color: #f2e5d2;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        border: 3px solid #cfa17d;
+        animation: slideIn 0.3s ease;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 25px 30px;
+        border-bottom: 2px solid #bb818a;
+    }
+    
+    .modal-header h3 {
+        color: #7a3741;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #7a3741;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.3s ease;
+    }
+    
+    .modal-close:hover {
+        color: #b25c69;
+    }
+    
+    .modal-body {
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .modal-icon {
+        font-size: 4rem;
+        color: #cfa17d;
+        margin-bottom: 20px;
+    }
+    
+    .modal-text {
+        color: #7a3741;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .modal-text-small {
+        color: #7a3741;
+        opacity: 0.8;
+        line-height: 1.5;
+        margin-bottom: 25px;
+    }
+    
+    .modal-contact {
+        background-color: rgba(207, 161, 125, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+    }
+    
+    .modal-contact p {
+        color: #7a3741;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .modal-contact p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .modal-footer {
+        padding: 20px 30px;
+        border-top: 2px solid #bb818a;
+        display: flex;
+        justify-content: center;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #bb818a;
+        border-radius: 10px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    /* Анимации */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @media (max-width: 768px) {
+        .auth-card {
+            padding: 30px 25px;
+        }
+        
+        .auth-title {
+            font-size: 2rem;
+        }
+        
+        .auth-subtitle {
+            font-size: 1.1rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .auth-page {
+            padding: 20px 15px;
+        }
+        
+        .auth-card {
+            padding: 25px 20px;
+            border-width: 2px;
+        }
+        
+        .auth-title {
+            font-size: 1.8rem;
+        }
+        
+        .modal-content {
+            width: 95%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                if (type === 'text') {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        }
+        
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        
+        if (forgotPasswordLink && forgotPasswordModal) {
+            // Открыть модальное окно
+            forgotPasswordLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                forgotPasswordModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // Блокируем скролл
+            });
+            
+            // Закрыть модальное окно
+            const closeModalFunc = function() {
+                forgotPasswordModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Разблокируем скролл
+            };
+            
+            if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModalFunc);
+            
+            // Закрыть при клике вне модального окна
+            forgotPasswordModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModalFunc();
+                }
+            });
+            
+            // Закрыть по клавише Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && forgotPasswordModal.style.display === 'flex') {
+                    closeModalFunc();
+                }
+            });
+        }
+        
+        // Валидация формы
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Простая валидация
+                if (!email || !password) {
+                    e.preventDefault();
+                    alert('Пожалуйста, заполните все поля!');
+                    return;
+                }
+                
+                // Валидация email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    e.preventDefault();
+                    alert('Пожалуйста, введите корректный email адрес!');
+                    return;
+                }
+                
+                // Анимация загрузки
+                const submitBtn = this.querySelector('.btn-login');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+                submitBtn.disabled = true;
+                
+                // Через 3 секунды возвращаем кнопку в исходное состояние
+                // (в реальном приложении это сделает серверный ответ)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            });
+        }
+        
+        // Автофокус на поле email
+        const emailField = document.getElementById('email');
+        if (emailField) {
+            emailField.focus();
+        }
+    });
+</script>
+{% endblock %}

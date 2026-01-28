@@ -12,7 +12,7 @@ class DiaryAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def has_image(self, obj):
-        return bool(obj.image)
+        return bool(obj.image_file)
 
     has_image.short_description = "Есть фото"
     has_image.boolean = True

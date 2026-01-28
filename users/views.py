@@ -11,7 +11,7 @@ from users.models import User
 class RegisterUser(CreateView):
     form_class = CustomUserCreationForm
     template_name = "users/register.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("diary_list")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -22,7 +22,7 @@ class RegisterUser(CreateView):
 class LoginUser(LoginView):
     form_class = CustomAuthenticationForm
     template_name = "users/login.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("diary_list")
 
 
 class LogoutUser(LogoutView):
@@ -40,7 +40,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
 class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
-    template_name = "users/register.html"
+    template_name = "users/profile_edit.html"
 
     def get_object(self):
         return self.request.user
@@ -51,7 +51,7 @@ class UpdateProfile(LoginRequiredMixin, UpdateView):
 
 class DeleteUser(LoginRequiredMixin, DeleteView):
     model = User
-    template_name = "users/delete.html"
+    template_name = "users/profile_delete.html"
     success_url = reverse_lazy("home")
 
     def get_object(self):

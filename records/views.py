@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -27,7 +27,9 @@ class DiaryCreateView(LoginRequiredMixin, CreateView):
     model = Diary
     form_class = DiaryCreateForm
     template_name = "records/diary_create.html"
-    success_url = reverse_lazy("diary_detail")
+
+    def get_success_url(self):
+        return reverse("diary_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         """Устанавливаем владельца"""
@@ -38,19 +40,19 @@ class DiaryCreateView(LoginRequiredMixin, CreateView):
 class DiaryUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = Diary
     form_class = DiaryUpdateForm
-    template_name = "records/diary_create.html"
-    success_url = reverse_lazy("diary_detail")
+    template_name = "records/diary_update.html"
 
 
 class DiaryDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
     model = Diary
-    template_name = "records/dairy_detail.html"
+    template_name = "records/diary_detail.html"
 
 
 class DiaryListView(LoginRequiredMixin, ListView):
     model = Diary
     template_name = "records/diary_list.html"
     paginate_by = 20
+    context_object_name = "entries"
 
     def get_queryset(self):
         """Только записи текущего пользователя, отсортированные по дате
@@ -78,3 +80,18 @@ class DiaryDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
     model = Diary
     template_name = "records/diary_delete.html"
     success_url = reverse_lazy("diary_list")
+
+
+# Будущее за горами
+
+
+class IdeasDemoView(TemplateView):
+    template_name = "ideas_demo.html"
+
+
+class HealthDemoView(TemplateView):
+    template_name = "health_demo.html"
+
+
+class FinanceDemoView(TemplateView):
+    template_name = "finance_demo.html"

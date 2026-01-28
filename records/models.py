@@ -68,4 +68,11 @@ class Diary(models.Model):
         return f"{self.title} ({self.owner.email})"
 
     def get_absolute_url(self):
-        return reverse("records:diary_detail", kwargs={"pk": self.pk})
+        return reverse("diary_detail", kwargs={"pk": self.pk})
+
+    def get_mood_emoji(self):
+        return dict(self.mood_choices).get(self.mood, "").split()[0]
+
+    def get_mood_text(self):
+        value = dict(self.mood_choices).get(self.mood, "")
+        return value.split(" ", 1)[1] if " " in value else value

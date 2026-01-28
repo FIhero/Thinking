@@ -5,13 +5,11 @@ import pytest
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
+from records.models import Diary
 from users.models import User
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
-
-from records.models import Diary
-
 
 
 @pytest.mark.django_db
@@ -103,7 +101,6 @@ class TestDiaryModel:
                 print(f"✓ URL accepted: {url}")
             except ValidationError:
                 print(f"✗ URL rejected: {url}")
-
 
     def test_image_upload_path(self, user):
         """Тест пути загрузки изображения"""
@@ -335,9 +332,6 @@ class TestDiaryUpdateView:
     @pytest.mark.django_db
     def test_owner_can_update(self, client, diary):
         """Тест обновления владельцем"""
-        title = diary.title
-        mood = diary.mood
-
         try:
             client.force_login(diary.owner)
 
