@@ -1,0 +1,1015 @@
+{% extends "base.html" %}
+
+{% block title %}Дневник{% endblock %}
+
+{% block content %}
+<div class="diary-page">
+    <div class="container">
+        <div class="diary-header">
+            <div class="header-left">
+                <h1 class="diary-title">
+                    <i class="fas fa-book"></i> Мой дневник
+                </h1>
+                <p class="diary-subtitle">ᓚ₍ ^. .^₎</p>
+            </div>
+            <div class="header-right">
+                <a href="{% url 'diary_create' %}" class="btn btn-primary btn-add-entry">
+                    <i class="fas fa-plus"></i> Новая запись
+                </a>
+            </div>
+        </div>
+        
+        <div class="diary-controls">
+            <div class="search-section">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" 
+                           class="search-input" 
+                           id="searchInput"
+                           placeholder="Поиск по заголовку, теме, настроению...">
+                    <button type="button" class="btn btn-clear-search" id="clearSearchBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-group">
+                    <button type="button" class="btn btn-filter" id="filterBtn" disabled>
+                        <i class="fas fa-filter"></i> Фильтры (скоро)
+                    </button>
+                    
+                    <button type="button" class="btn btn-sort" id="sortBtn" disabled>
+                        <i class="fas fa-sort-amount-down"></i> Сортировка (скоро)
+                    </button>
+                </div>
+                
+                <div class="stats-badge">
+                    <span class="stats-count">{{ page_obj.paginator.count|default:"0" }}</span>
+                    <span class="stats-label">записей</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="diary-entries" id="diaryEntries">
+            {% if entries %}
+                {% for entry in entries %}
+                <div class="diary-entry" data-entry-id="{{ entry.id }}">
+                    <div class="entry-date">
+                        <div class="date-day">{{ entry.date|date:"d" }}</div>
+                        <div class="date-month">{{ entry.date|date:"M"|lower }}</div>
+                        <div class="date-year">{{ entry.date|date:"Y" }}</div>
+                    </div>
+                    
+                    <div class="entry-content">
+                        <div class="entry-header">
+                            <h3 class="entry-title">{{ entry.title }}</h3>
+                            <div class="entry-meta">
+                            </div>
+                        </div>
+                        
+                        <div class="entry-body">
+                            <p class="entry-text">{{ entry.text|truncatechars:300 }}</p>
+                        </div>
+                        
+                        <div class="entry-footer">
+                                <div class="entry-time">
+                                    <i class="far fa-clock"></i>
+                                    {{ entry.created_at|time:"H:i" }}
+                                </div>
+                            
+                            
+                            <div class="entry-actions">
+                            <a href="{% url 'diary_update' entry.id %}" class="btn-action btn-edit">
+                                    <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'diary_delete' entry.id %}" class="btn-action btn-delete">
+                                    <i class="fas fa-trash"></i>
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if entry.mood %}
+                        <span class="mood-emoji"
+                            title="{{ entry.get_mood_text }}">
+                            {{ entry.get_mood_emoji }}
+                        </span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-diary card-outline">
+                    <div class="empty-illustration">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="empty-title">Ваш дневник пуст</h3>
+                    <p class="empty-text">
+                        Начните записывать свои мысли, идеи и события.<br>
+                        Каждая запись — это шаг к самопознанию.
+                    </p>
+                    <a href="{% url 'diary_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Создать первую запись
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <div class="diary-pagination">
+            <nav class="pagination-nav">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link prev">
+                    <i class="fas fa-chevron-left"></i> Назад
+                </a>
+                {% endif %}
+                
+                <div class="pagination-pages">
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="pagination-page active">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}" class="pagination-page">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="pagination-link next">
+                    Вперед <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Страница дневника */
+.diary-page {
+    padding: 30px 0;
+    background-color: #f2e5d2;
+    min-height: calc(100vh - 200px);
+}
+
+/* Заголовок */
+.diary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-left {
+    flex: 1;
+    min-width: 300px;
+}
+
+.diary-title {
+    font-size: 2.5rem;
+    color: #7a3741;
+    margin-bottom: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.diary-subtitle {
+    font-size: 1.2rem;
+    color: #b25c69;
+    opacity: 0.9;
+}
+
+.btn-add-entry {
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+/* Панель управления */
+.diary-controls {
+    background-color: transparent;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.search-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    color: #bb818a;
+    font-size: 1.2rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 50px 14px 50px;
+    border: 2px solid #bb818a;
+    border-radius: 12px;
+    background-color: #f2e5d2;
+    color: #7a3741;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #7a3741;
+    box-shadow: 0 0 0 3px rgba(122, 55, 65, 0.1);
+}
+
+.search-input::placeholder {
+    color: #bb818a;
+    opacity: 0.7;
+}
+
+.btn-clear-search {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #bb818a;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.btn-clear-search:hover {
+    color: #7a3741;
+}
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-filter, .btn-sort {
+    padding: 10px 20px;
+    background-color: rgba(207, 161, 125, 0.1);
+    border: 2px solid #cfa17d;
+    color: #7a3741;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.stats-badge {
+    background: linear-gradient(135deg, #bb818a, #cfa17d);
+    color: #f2e5d2;
+    padding: 8px 16px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.stats-count {
+    font-size: 1.2rem;
+}
+
+.stats-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Записи дневника */
+.diary-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.diary-entry {
+    background-color: transparent;
+    padding: 25px;
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.diary-entry:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(122, 55, 65, 0.15);
+    border-color: #bb818a;
+}
+
+.entry-date {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--color-text-dark);
+    color: #f2e5d2;
+    padding: 10px;
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    border-radius: 10px 0 10px 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.date-day {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-bg);
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.date-month {
+    font-size: 1.1rem;
+    color: #b25c69;
+    text-transform: capitalize;
+    margin-bottom: 5px;
+}
+
+.date-year {
+    font-size: 0.9rem;
+    color: var(--color-bg);
+    opacity: 0.7;
+}
+
+/* Центральная часть: Контент */
+.entry-content {
+    flex: 1;
+    min-width: 0; 
+    padding-left: 110px;
+    padding-top: 16px;
+}
+
+.entry-header {
+    margin-bottom: 15px;
+}
+
+.entry-title {
+    font-size: 1.6rem;
+    color: #7a3741;
+    margin-bottom: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.mood-badge {
+    font-size: 1.2rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background-color: rgba(207, 161, 125, 0.2);
+    border: 1px solid #cfa17d;
+}
+
+.entry-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background-color: rgba(122, 55, 65, 0.1);
+    color: #7a3741;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(122, 55, 65, 0.2);
+}
+
+.entry-body {
+    margin-bottom: 20px;
+}
+
+.entry-text {
+    color: #7a3741;
+    line-height: 1.6;
+    font-size: 1.05rem;
+    margin-bottom: 15px;
+}
+
+.btn-read-more {
+    background: none;
+    border: none;
+    color: #b25c69;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s ease;
+}
+
+.btn-read-more:hover {
+    color: #7a3741;
+    text-decoration: underline;
+}
+
+.entry-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(207, 161, 125, 0.3);
+}
+
+.entry-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(207, 161, 125, 0.1);
+    color: #7a3741;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    background-color: rgba(207, 161, 125, 0.2);
+    transform: scale(1.1);
+}
+
+.btn-delete:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.entry-time {
+    color: #7a3741;
+    opacity: 0.7;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Правая часть: Настроение */
+.entry-mood-display {
+    flex-shrink: 0;
+    width: 100px;
+    text-align: center;
+    padding: 15px;
+    background-color: rgba(207, 161, 125, 0.05);
+    border-radius: 15px;
+}
+
+.mood-emoji-large {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.mood-text {
+    color: #7a3741;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Пустой дневник */
+.empty-diary {
+    background-color: transparent;
+    border: 3px dashed #cfa17d;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.empty-illustration {
+    font-size: 5rem;
+    color: #cfa17d;
+    margin-bottom: 25px;
+}
+
+.empty-title {
+    font-size: 1.8rem;
+    color: #7a3741;
+    margin-bottom: 15px;
+}
+
+.empty-text {
+    color: #7a3741;
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Пагинация */
+.diary-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pagination-link {
+    padding: 10px 20px;
+    background-color: rgba(207, 161, 125, 0.1);
+    border: 2px solid #cfa17d;
+    color: #7a3741;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.pagination-link:hover {
+    background-color: rgba(207, 161, 125, 0.2);
+    transform: translateY(-2px);
+}
+
+.pagination-pages {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-page {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #7a3741;
+    transition: all 0.3s ease;
+}
+
+.pagination-page:not(.active) {
+    background-color: rgba(207, 161, 125, 0.1);
+    border: 2px solid transparent;
+}
+
+.pagination-page:not(.active):hover {
+    background-color: rgba(207, 161, 125, 0.2);
+    border-color: #cfa17d;
+}
+
+.pagination-page.active {
+    background-color: #7a3741;
+    color: #f2e5d2;
+}
+
+/* Модальные окна */
+.modal-large {
+    max-width: 800px;
+}
+
+.entry-view-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(207, 161, 125, 0.3);
+}
+
+.view-date {
+    font-size: 1.2rem;
+    color: #7a3741;
+    font-weight: 600;
+}
+
+.view-mood {
+    font-size: 1.5rem;
+}
+
+.entry-view-content {
+    color: #7a3741;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    white-space: pre-wrap;
+}
+
+/* Селектор настроений */
+.mood-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.mood-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 15px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-color: rgba(207, 161, 125, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 80px;
+}
+
+.mood-option:hover {
+    background-color: rgba(207, 161, 125, 0.2);
+    transform: translateY(-2px);
+}
+
+.mood-option input[type="radio"] {
+    display: none;
+}
+
+.mood-option input[type="radio"]:checked + .mood-emoji {
+    transform: scale(1.2);
+}
+
+.mood-option input[type="radio"]:checked ~ .mood-label {
+    color: #7a3741;
+    font-weight: 600;
+}
+
+.mood-emoji {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    transition: transform 0.3s ease;
+}
+
+.mood-label {
+    color: #7a3741;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Большое текстовое поле */
+.textarea-large {
+    min-height: 200px;
+    resize: vertical;
+}
+
+.delete-warning {
+    text-align: center;
+    padding: 20px;
+}
+
+.delete-warning i {
+    font-size: 3rem;
+    color: #dc3545;
+    margin-bottom: 15px;
+}
+
+.delete-warning p {
+    color: #7a3741;
+    line-height: 1.6;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .diary-entry {
+        flex-direction: column;
+    }
+    
+    .entry-date {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        align-items: center;
+    }
+    
+    .date-day {
+        font-size: 2rem;
+        margin-bottom: 0;
+    }
+    
+    .entry-mood-display {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .mood-emoji-large {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .diary-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .diary-title {
+        justify-content: center;
+    }
+    
+    .diary-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-section, .filter-section {
+        width: 100%;
+    }
+    
+    .filter-group {
+        justify-content: center;
+    }
+    
+    .entry-footer {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .mood-selector {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .diary-page {
+        padding: 20px 15px;
+    }
+    
+    .diary-title {
+        font-size: 2rem;
+    }
+    
+    .diary-controls, .diary-entry {
+        padding: 20px;
+    }
+    
+    .entry-date {
+        gap: 15px;
+    }
+    
+    .date-day {
+        font-size: 1.8rem;
+    }
+    
+    .date-month, .date-year {
+        font-size: 0.9rem;
+    }
+    
+    .entry-title {
+        font-size: 1.4rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Элементы страницы
+    const addEntryBtn = document.getElementById('addEntryBtn');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    
+    // Открытие страницы создания записи
+    function openCreatePage() {
+        // Временно редиректим на заглушку
+        window.location.href = '/diary/create/';
+    }
+    
+    // Обработчик кнопки создания записи
+    if (addEntryBtn) {
+        addEntryBtn.addEventListener('click', openCreatePage);
+    }
+    
+    // Обработчик для кнопки "Создать первую запись"
+    const addFirstEntryBtn = document.getElementById('addFirstEntryBtn');
+    if (addFirstEntryBtn) {
+        addFirstEntryBtn.addEventListener('click', openCreatePage);
+    }
+    
+    // Простой поиск с фильтрацией на фронтенде
+    if (searchInput) {
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            
+            searchTimeout = setTimeout(() => {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                // Показываем/скрываем кнопку очистки
+                if (clearSearchBtn) {
+                    clearSearchBtn.style.display = searchTerm ? 'block' : 'none';
+                }
+                
+                if (searchTerm) {
+                    // Фильтруем записи
+                    filterEntries(searchTerm);
+                } else {
+                    // Показываем все записи
+                    document.querySelectorAll('.diary-entry').forEach(entry => {
+                        entry.style.display = 'flex';
+                    });
+                }
+            }, 300);
+        });
+    }
+    
+    // Кнопка очистки поиска
+    if (clearSearchBtn) {
+        clearSearchBtn.style.display = 'none';
+        
+        clearSearchBtn.addEventListener('click', function() {
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        });
+    }
+    
+    // Функция фильтрации записей
+    function filterEntries(searchTerm) {
+        document.querySelectorAll('.diary-entry').forEach(entry => {
+            const title = entry.querySelector('.entry-title')?.textContent.toLowerCase() || '';
+            const content = entry.querySelector('.entry-text')?.textContent.toLowerCase() || '';
+            const tags = Array.from(entry.querySelectorAll('.tag')).map(tag => 
+                tag.textContent.toLowerCase()
+            );
+            
+            const matches = title.includes(searchTerm) || 
+                           content.includes(searchTerm) || 
+                           tags.some(tag => tag.includes(searchTerm));
+            
+            entry.style.display = matches ? 'flex' : 'none';
+        });
+        
+        // Если ничего не найдено и есть пустое состояние, показываем его
+        const visibleEntries = document.querySelectorAll('.diary-entry[style*="flex"]').length;
+        const emptySearchElement = document.querySelector('.empty-search');
+        
+        if (visibleEntries === 0 && !emptySearchElement) {
+            showEmptySearchState(searchTerm);
+        } else if (visibleEntries > 0 && emptySearchElement) {
+            emptySearchElement.remove();
+        }
+    }
+    
+    // Показать состояние "ничего не найдено"
+    function showEmptySearchState(searchTerm) {
+        const entriesContainer = document.getElementById('diaryEntries');
+        if (!entriesContainer) return;
+        
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'empty-search card-outline';
+        emptyDiv.innerHTML = `
+            <div class="empty-illustration">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="empty-title">Ничего не найдено</h3>
+            <p class="empty-text">
+                По запросу "<strong>${searchTerm}</strong>" записей не найдено.
+            </p>
+            <button type="button" class="btn btn-secondary" id="clearSearchResultsBtn">
+                <i class="fas fa-times"></i> Очистить поиск
+            </button>
+        `;
+        
+        entriesContainer.appendChild(emptyDiv);
+        
+        // Обработчик кнопки очистки результатов
+        document.getElementById('clearSearchResultsBtn').addEventListener('click', function() {
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        });
+    }
+    
+    // Обработчики кликов по записям для перехода на страницу просмотра
+    document.addEventListener('click', function(e) {
+        // Клик по записи (кроме кнопок действий)
+        if (e.target.closest('.diary-entry') && 
+            !e.target.closest('.btn-action') && 
+            !e.target.closest('.btn-read-more')) {
+            const entryId = e.target.closest('.diary-entry').dataset.entryId;
+            if (entryId) {
+                // Переход на страницу просмотра записи
+                window.location.href = `/${entryId}/`;
+            }
+        }
+        
+        // Кнопка "Читать полностью"
+        if (e.target.closest('.btn-read-more')) {
+            const entryId = e.target.closest('.btn-read-more').dataset.entryId;
+            if (entryId) {
+                window.location.href = `/diary/${entryId}/`;
+            }
+        }
+        
+        // Кнопка редактирования
+        if (e.target.closest('.btn-edit')) {
+            const entryId = e.target.closest('.btn-edit').dataset.entryId;
+            if (entryId) {
+                window.location.href = `/diary/${entryId}/edit/`;
+            }
+        }
+        
+        // Кнопка удаления
+        if (e.target.closest('.btn-delete')) {
+            const entryId = e.target.closest('.btn-delete').dataset.entryId;
+            if (entryId) {
+                if (confirm('Вы уверены, что хотите удалить эту запись?')) {
+                    // Отправляем запрос на удаление
+                    deleteEntry(entryId);
+                }
+            }
+        }
+    });
+    
+
+    // Получение CSRF токена
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+    
+    // Инициализация
+    console.log('Diary page loaded - simple navigation only');
+});
+
+
+</script>
+
+{% endblock %}

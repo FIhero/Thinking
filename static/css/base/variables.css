@@ -1,0 +1,20 @@
+:root {
+    --color-card: #cfa17d;      
+    --color-bg: #f2e5d2;        
+    --color-text-dark: #7a3741; 
+    --color-button: #b25c69;    
+    --color-button-hover: #bb818a;
+    
+    --text-light: #f2e5d2;      
+    --accent: #cfa17d;         
+    --shadow: rgba(122, 55, 65, 0.1);
+    
+    --border-radius: 15px;
+    --border-radius-sm: 8px;
+    --border-radius-lg: 20px;
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 30px;
+    --spacing-xl: 40px;
+}

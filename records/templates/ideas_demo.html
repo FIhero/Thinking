@@ -1,0 +1,648 @@
+{% extends "base.html" %}
+
+{% block title %}THINCKING - Идеи и цели{% endblock %}
+
+{% block content %}
+<div class="ideas-demo-page">
+    <div class="container">
+        <div class="demo-header">
+            <div class="demo-badge">
+                <i class="fas fa-tools"></i> В РАЗРАБОТКЕ
+            </div>
+            <h1 class="demo-title">
+                <i class="fas fa-lightbulb"></i> Идеи и цели
+            </h1>
+            <p class="demo-subtitle">Раздел в разработке. Скоро здесь появятся новые возможности!</p>
+        </div>
+
+        <div class="demo-card card-outline">
+            <div class="demo-illustration">
+                <i class="fas fa-rocket"></i>
+            </div>
+            
+            <h2 class="card-title">Что планируется?</h2>
+            
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Постановка целей</h3>
+                        <p>Определяйте краткосрочные и долгосрочные цели с дедлайнами</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Отслеживание прогресса</h3>
+                        <p>Визуализация прогресса выполнения целей с графиками</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Система наград</h3>
+                        <p>Награждайте себя за достижение целей</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Категории и теги</h3>
+                        <p>Организуйте идеи по категориям: работа, здоровье, хобби и т.д.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-ideas">
+                <h3 class="demo-section-title">Примеры будущих идей:</h3>
+                
+                <div class="demo-idea-item">
+                    <div class="idea-checkbox">
+                        <i class="far fa-circle"></i>
+                    </div>
+                    <div class="idea-content">
+                        <div class="idea-header">
+                            <span class="idea-title">Научиться играть на гитаре</span>
+                            <span class="idea-date">до 01.06.2025</span>
+                        </div>
+                        <div class="idea-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%"></div>
+                            </div>
+                            <span class="progress-text">30%</span>
+                        </div>
+                        <div class="idea-tags">
+                            <span class="tag">Хобби</span>
+                            <span class="tag">Музыка</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-idea-item">
+                    <div class="idea-checkbox">
+                        <i class="far fa-circle"></i>
+                    </div>
+                    <div class="idea-content">
+                        <div class="idea-header">
+                            <span class="idea-title">Прочитать 12 книг в год</span>
+                            <span class="idea-date">до 31.12.2025</span>
+                        </div>
+                        <div class="idea-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 58%"></div>
+                            </div>
+                            <span class="progress-text">58%</span>
+                        </div>
+                        <div class="idea-tags">
+                            <span class="tag">Саморазвитие</span>
+                            <span class="tag">Чтение</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-idea-item completed">
+                    <div class="idea-checkbox">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="idea-content">
+                        <div class="idea-header">
+                            <span class="idea-title">Создать приложение THINCKING</span>
+                            <span class="idea-date">выполнено 25.01.2025</span>
+                        </div>
+                        <div class="idea-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">100%</span>
+                        </div>
+                        <div class="idea-tags">
+                            <span class="tag">Проект</span>
+                            <span class="tag">Разработка</span>
+                        </div>
+                        <div class="idea-reward">
+                            <i class="fas fa-gift"></i> Награда: Поездка на море
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-actions">
+                <a href="{% url 'home' %}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Вернуться на главную
+                </a>
+            </div>
+            
+            <div class="development-plan">
+                <h3 class="plan-title">
+                    <i class="fas fa-calendar-alt"></i> План разработки:
+                </h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Когда-нибудь</div>
+                        <div class="timeline-content">
+                            <strong>Прототип</strong> - базовая функциональность
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Может быть</div>
+                        <div class="timeline-content">
+                            <strong>Система наград</strong> - мотивационные элементы
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Неуверен</div>
+                        <div class="timeline-content">
+                            <strong>Мобильное приложение</strong> - iOS и Android
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Демо-страница идей */
+    .ideas-demo-page {
+        padding: 40px 0;
+        background-color: #f2e5d2;
+        min-height: calc(100vh - 200px);
+    }
+    
+    /* Заголовок */
+    .demo-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .demo-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+    
+    .demo-badge i {
+        margin-right: 8px;
+    }
+    
+    .demo-title {
+        font-size: 3rem;
+        color: #7a3741;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+    
+    .demo-title i {
+        color: #ffd166;
+        margin-right: 15px;
+    }
+    
+    .demo-subtitle {
+        font-size: 1.2rem;
+        color: #b25c69;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+    
+    /* Основная карточка */
+    .demo-card {
+        background-color: transparent;
+        border: 3px solid #cfa17d;
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(122, 55, 65, 0.1);
+    }
+    
+    .demo-illustration {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .demo-illustration i {
+        font-size: 5rem;
+        color: #ffd166;
+        background: linear-gradient(135deg, #ffd166, #ffb347);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .card-title {
+        text-align: center;
+        font-size: 2rem;
+        color: #7a3741;
+        margin-bottom: 40px;
+        font-weight: 700;
+    }
+    
+    /* Список возможностей */
+    .features-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 50px;
+    }
+    
+    .feature-item {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 25px;
+        background-color: rgba(207, 161, 125, 0.05);
+        border-radius: 15px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover {
+        border-color: #cfa17d;
+        transform: translateY(-5px);
+        background-color: rgba(207, 161, 125, 0.1);
+    }
+    
+    .feature-icon {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #bb818a, #cfa17d);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .feature-content h3 {
+        font-size: 1.3rem;
+        color: #7a3741;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .feature-content p {
+        color: #7a3741;
+        opacity: 0.8;
+        line-height: 1.5;
+        margin: 0;
+    }
+    
+    /* Демо-идеи */
+    .demo-ideas {
+        margin-bottom: 50px;
+    }
+    
+    .demo-section-title {
+        font-size: 1.5rem;
+        color: #7a3741;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(207, 161, 125, 0.3);
+    }
+    
+    .demo-idea-item {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border: 2px solid rgba(207, 161, 125, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .demo-idea-item:hover {
+        border-color: #cfa17d;
+        box-shadow: 0 5px 20px rgba(122, 55, 65, 0.1);
+    }
+    
+    .demo-idea-item.completed {
+        background-color: rgba(76, 175, 80, 0.05);
+        border-color: rgba(76, 175, 80, 0.3);
+    }
+    
+    .idea-checkbox {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #bb818a;
+    }
+    
+    .demo-idea-item.completed .idea-checkbox {
+        color: #4CAF50;
+    }
+    
+    .idea-content {
+        flex: 1;
+    }
+    
+    .idea-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .idea-title {
+        font-size: 1.2rem;
+        color: #7a3741;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .idea-date {
+        font-size: 0.9rem;
+        color: #b25c69;
+        font-weight: 500;
+    }
+    
+    .idea-progress {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .progress-bar {
+        flex: 1;
+        height: 10px;
+        background-color: rgba(207, 161, 125, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, #bb818a, #cfa17d);
+        border-radius: 5px;
+        transition: width 0.3s ease;
+    }
+    
+    .demo-idea-item.completed .progress-fill {
+        background: linear-gradient(to right, #4CAF50, #8BC34A);
+    }
+    
+    .progress-text {
+        font-size: 0.9rem;
+        color: #7a3741;
+        font-weight: 600;
+        min-width: 40px;
+    }
+    
+    .idea-tags {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .tag {
+        background-color: rgba(122, 55, 65, 0.1);
+        color: #7a3741;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(122, 55, 65, 0.2);
+    }
+    
+    .idea-reward {
+        color: #FF9800;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 8px 12px;
+        background-color: rgba(255, 152, 0, 0.1);
+        border-radius: 10px;
+        border: 1px dashed #FF9800;
+        margin-top: 10px;
+    }
+    
+    .idea-reward i {
+        margin-right: 8px;
+    }
+    
+    /* Кнопки действий */
+    .demo-actions {
+        display: flex;
+        gap: 15px;
+        margin: 40px 0;
+        padding: 30px 0;
+        border-top: 2px solid rgba(207, 161, 125, 0.3);
+        border-bottom: 2px solid rgba(207, 161, 125, 0.3);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .demo-actions .btn {
+        min-width: 200px;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    /* План разработки */
+    .development-plan {
+        margin-top: 40px;
+    }
+    
+    .plan-title {
+        font-size: 1.4rem;
+        color: #7a3741;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .plan-title i {
+        color: #b25c69;
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, #bb818a, #cfa17d);
+        border-radius: 3px;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 30px;
+        padding-left: 20px;
+    }
+    
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -34px;
+        top: 0;
+        width: 15px;
+        height: 15px;
+        background-color: #cfa17d;
+        border-radius: 50%;
+        border: 3px solid #f2e5d2;
+        box-shadow: 0 0 0 3px rgba(207, 161, 125, 0.3);
+    }
+    
+    .timeline-date {
+        font-size: 1.1rem;
+        color: #b25c69;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .timeline-content {
+        color: #7a3741;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 992px) {
+        .demo-title {
+            font-size: 2.5rem;
+        }
+        
+        .features-list {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .ideas-demo-page {
+            padding: 30px 0;
+        }
+        
+        .demo-card {
+            padding: 30px 25px;
+        }
+        
+        .demo-title {
+            font-size: 2rem;
+        }
+        
+        .demo-actions {
+            flex-direction: column;
+        }
+        
+        .demo-actions .btn {
+            width: 100%;
+        }
+        
+        .idea-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .demo-card {
+            padding: 25px 20px;
+            border-width: 2px;
+        }
+        
+        .demo-title {
+            font-size: 1.8rem;
+        }
+        
+        .feature-item {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Ideas demo page loaded');
+        
+        // Простая анимация для прогресс-баров
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+            const originalWidth = bar.style.width;
+            bar.style.width = '0%';
+            
+            setTimeout(() => {
+                bar.style.transition = 'width 1s ease';
+                bar.style.width = originalWidth;
+            }, 300);
+        });
+        
+        // Анимация появления элементов
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        timelineItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 300 + (index * 200));
+        });
+        
+        // Анимация фич
+        const featureItems = document.querySelectorAll('.feature-item');
+        featureItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 500 + (index * 150));
+        });
+    });
+</script>
+{% endblock %}

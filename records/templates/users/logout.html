@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title"><i class="fas fa-sign-out-alt"></i> Выход</h1>
+                <p class="auth-subtitle">Вы действительно хотите выйти из аккаунта?</p>
+            </div>
+
+            <div class="confirmation-section">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </button>
+                </form>
+
+                <a href="{% url 'profile' %}" class="btn-register">
+                    <i class="fas fa-arrow-left"></i> Отмена
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

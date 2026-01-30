@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Health & Mind Track{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {% block extra_css %} {% endblock %}
+
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="/" class="logo">THINCKING</a>
+            {% if user.is_authenticated %}
+            <nav class="nav">
+                <ul class="nav-list">
+                        <a href="{% url 'diary_list' %}" title="Истории дневника"><i class="fas fa-book"></i><span class="icon-label"></span></a>
+                        <a href="{% url 'ideas_demo' %}" title="Идеи для жизни"><i class="fas fa-lightbulb"></i><span class="icon-label"></span></a>
+                        <a href="{% url 'health_demo' %}" title="Клинические показатели"><i class="fas fa-heartbeat"></i><span class="icon-label"></span></a>
+                        <a href="{% url 'finance_demo' %}" title="Финансы"><i class="fas fa-piggy-bank"></i> <span class="icon-label"></span></a>
+                        <a href="{% url 'profile' %}" title="Аккаунт"> <i class="fas fa-user-circle"></i> <span class="icon-label"></span></a>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="main container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 THINCKING. Думайте.</p>
+        </div>
+    </footer>
+
+    {% include 'includes/password_reset_modal.html' %}
+    {% include 'includes/health_func_demo.html' %}
+    <script src="{% static 'js/app.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

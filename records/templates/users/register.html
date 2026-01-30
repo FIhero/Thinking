@@ -1,0 +1,827 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1 class="auth-title">Добро подаловать к нам!</h1>
+            <p class="auth-subtitle">(°▽°)/</p>
+        </div>
+
+        <div class="auth-card">
+            <form method="post" class="auth-form" id="registerForm">
+                {% csrf_token %}
+                
+                <div class="form-messages">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-error">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                
+                
+                <div class="form-row">
+                    <div class="form-group form-col">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="email" name="email" 
+                               class="form-input {% if form.email.errors %}error{% endif %}" 
+                               placeholder="example@mail.com"
+                               required
+                               {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
+                        {% if form.email.errors %}
+                        <div class="field-error">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group form-col">
+                        <label for="phone" class="form-label">
+                            <i class="fas fa-phone"></i> Телефон
+                        </label>
+                        <input type="tel" id="phone" name="phone" 
+                               class="form-input {% if form.phone.errors %}error{% endif %}" 
+                               placeholder="+7 (___) ___-__-__"
+                               {% if form.phone.value %}value="{{ form.phone.value }}"{% endif %}>
+                        {% if form.phone.errors %}
+                        <div class="field-error">
+                            {% for error in form.phone.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group form-col">
+                        <div class="password-header">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock"></i> Пароль
+                            </label>
+                        </div>
+                        <div class="password-input-wrapper">
+                            <input type="password1" id="password1" name="password1" 
+                                   class="form-input password-input {% if form.password.errors %}error{% endif %}"
+                                   placeholder="Придумайте пароль"
+                                   required>
+                            <button type="button" class="toggle-password toggle-password-1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <div class="field-error">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group form-col">
+                        <div class="password-header">
+                            <label for="password2" class="form-label">
+                                <i class="fas fa-lock"></i> Повторите пароль
+                            </label>
+                        </div>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="password2" name="password2" 
+                                   class="form-input password-input {% if form.password2.errors %}error{% endif %}"
+                                   placeholder="Повторите пароль"
+                                   required>
+                            <button type="button" class="toggle-password toggle-password-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                        <div class="field-error">
+                            {% for error in form.password2.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="register-buttons">
+                    <div class="buttons-row three-buttons">
+                        <button type="button" class="btn btn-health" id="healthInfoBtn">
+                            <i class="fas fa-heartbeat"></i> Здоровье
+                        </button>
+                            <a href="{% url 'login' %}" class="btn btn-login-link">
+                            <i class="fas fa-sign-in-alt"></i> Войти</a>
+                        
+                        <button type="submit" class="btn btn-primary btn-register-submit">
+                            <i class="fas fa-user-plus"></i> Регистрация
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="auth-footer">
+                    <p class="small-text">Нажимая "Зарегистрироваться", вы соглашаетесь с нашими 
+                        <a class="auth-link">Условиями использования</a> и 
+                        <a class="auth-link">Политикой конфиденциальности</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-page {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background-color: #f2e5d2;
+    }
+    
+    .auth-container {
+        width: 100%;
+        max-width: 550px; 
+        margin: 0 auto;
+    }
+    
+    /* Заголовок */
+    .auth-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .auth-title {
+        font-size: 2.5rem;
+        color: #7a3741;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    
+    .auth-subtitle {
+        font-size: 1.2rem;
+        color: #b25c69;
+        opacity: 0.9;
+    }
+    
+    /* ФИКСИРОВАННАЯ КАРТОЧКА С ФОРМОЙ */
+    .auth-card.fixed-height {
+        min-height: 620px; /* Фиксированная высота */
+        max-height: 620px; /* Не расширяется */
+        background-color: transparent;
+        border: 3px solid #cfa17d;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(122, 55, 65, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .auth-card.fixed-height .auth-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    /* Строки с двумя колонками */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    /* Контейнер для сообщений об ошибках */
+    .form-messages {
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Стили для алертов */
+    .alert {
+        padding: 15px;
+        border-radius: 10px;
+        margin: 0;
+        animation: slideDown 0.3s ease;
+        border-left: 4px solid;
+        font-size: 0.95rem;
+    }
+    
+    .alert-error {
+        background-color: rgba(244, 67, 54, 0.1);
+        border-color: #f44336;
+        color: #c62828;
+    }
+    
+    .alert-success {
+        background-color: rgba(76, 175, 80, 0.1);
+        border-color: #4CAF50;
+        color: #2e7d32;
+    }
+    
+    /* Ошибки полей */
+    .field-error {
+        color: #f44336;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+    
+    .form-input.error {
+        border-color: #f44336;
+        background-color: rgba(244, 67, 54, 0.05);
+    }
+    
+    /* Стили формы */
+    .form-group {
+        margin-bottom: 0;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #bb818a;
+        border-radius: 10px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #7a3741;
+        box-shadow: 0 0 0 3px rgba(122, 55, 65, 0.2);
+        background-color: white;
+    }
+    
+    /* Поля пароля */
+    .password-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .password-input-wrapper {
+        position: relative;
+    }
+    
+    .password-input {
+        padding-right: 50px;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #bb818a;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 5px;
+        transition: color 0.3s ease;
+    }
+    
+    .toggle-password:hover {
+        color: #7a3741;
+    }
+    
+    /* Кнопки регистрации - ТРИ В ОДНОМ РЯДУ */
+    .register-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .buttons-row.three-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .login-link-container {
+        margin-top: 10px;
+    }
+    
+    /* Стили для всех кнопок */
+    .btn {
+        padding: 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    /* Кнопка "Здоровье" */
+    .btn-health {
+        background-color: rgba(178, 92, 105, 0.1);
+        color: #7a3741;
+        border: 2px solid #b25c69;
+    }
+    
+    .btn-health:hover {
+        background-color: #b25c69;
+        color: #f2e5d2;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(178, 92, 105, 0.3);
+    }
+    
+    /* Кнопка "Демо" */
+    .btn-demo {
+        background-color: rgba(207, 161, 125, 0.1);
+        color: #7a3741;
+        border: 2px solid #cfa17d;
+    }
+    
+    .btn-demo:hover {
+        background-color: #cfa17d;
+        color: #f2e5d2;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(207, 161, 125, 0.3);
+    }
+    
+    /* Кнопка "Регистрация" */
+    .btn-register-submit {
+        background: linear-gradient(to right, #b25c69, #bb818a);
+        color: #f2e5d2;
+        border: 2px solid #b25c69;
+    }
+    
+    .btn-register-submit:hover {
+        background: linear-gradient(to right, #7a3741, #b25c69);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(122, 55, 65, 0.3);
+    }
+    
+    /* Кнопка "Войти в существующий аккаунт" */
+    .btn-login-link {
+        width: 100%;
+        background-color: transparent;
+        color: #7a3741;
+        border: 2px solid #7a3741;
+    }
+    
+    .btn-login-link:hover {
+        background-color: #7a3741;
+        color: #f2e5d2;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(122, 55, 65, 0.2);
+    }
+    
+    /* Футер формы */
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(207, 161, 125, 0.3);
+    }
+    
+    .auth-footer p {
+        margin-bottom: 10px;
+        color: #7a3741;
+    }
+    
+    .small-text {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        line-height: 1.4;
+    }
+    
+    .auth-link {
+        color: #b25c69;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .auth-link:hover {
+        color: #7a3741;
+        text-decoration: underline;
+    }
+    
+    /* Модальные окна */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+        background-color: #f2e5d2;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 450px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        border: 3px solid #cfa17d;
+        animation: slideIn 0.3s ease;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 25px 30px;
+        border-bottom: 2px solid #bb818a;
+    }
+    
+    .modal-header h3 {
+        color: #7a3741;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #7a3741;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.3s ease;
+    }
+    
+    .modal-close:hover {
+        color: #b25c69;
+    }
+    
+    .modal-body {
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .modal-icon {
+        font-size: 4rem;
+        color: #cfa17d;
+        margin-bottom: 20px;
+    }
+    
+    .modal-text {
+        color: #7a3741;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .modal-text-small {
+        color: #7a3741;
+        opacity: 0.8;
+        line-height: 1.5;
+        margin-bottom: 25px;
+    }
+    
+    /* Особенности для окна здоровья */
+    .modal-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin: 25px 0;
+    }
+    
+    .feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 15px;
+        background-color: rgba(207, 161, 125, 0.1);
+        border-radius: 10px;
+        color: #7a3741;
+    }
+    
+    .feature-item i {
+        font-size: 1.5rem;
+        color: #b25c69;
+    }
+    
+    .modal-info {
+        background-color: rgba(187, 129, 138, 0.1);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 20px;
+        color: #7a3741;
+        font-size: 0.9rem;
+        text-align: left;
+    }
+    
+    .modal-info p {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+    }
+    
+    .modal-info i {
+        color: #b25c69;
+    }
+    
+    .modal-coming-soon {
+        background-color: rgba(207, 161, 125, 0.1);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 20px;
+        color: #7a3741;
+    }
+    
+    .modal-footer {
+        padding: 20px 30px;
+        border-top: 2px solid #bb818a;
+        display: flex;
+        justify-content: center;
+    }
+    
+    /* Анимации */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .auth-container {
+            max-width: 500px;
+        }
+        
+        .auth-card.fixed-height {
+            min-height: 650px;
+            max-height: 650px;
+            padding: 30px 25px;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .buttons-row.three-buttons {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .auth-title {
+            font-size: 2rem;
+        }
+        
+        .auth-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .modal-features {
+            grid-template-columns: 1fr;
+        }
+        
+        .btn {
+            padding: 14px;
+            font-size: 0.95rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .auth-page {
+            padding: 20px 15px;
+        }
+        
+        .auth-card.fixed-height {
+            min-height: 680px;
+            max-height: 680px;
+            padding: 25px 20px;
+            border-width: 2px;
+        }
+        
+        .auth-title {
+            font-size: 1.8rem;
+        }
+        
+        .modal-content {
+            width: 95%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.getElementById('phone');
+if (phoneInput) {
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        
+        // Если начинается не с 7 или 8, добавляем 7
+        if (value.length > 0 && !value.startsWith('7') && !value.startsWith('8')) {
+            value = '7' + value;
+        }
+        
+        // Просто сохраняем цифры, без форматирования
+        e.target.value = value;
+    });
+    
+    // При фокусе добавляем +7 если поле пустое
+    phoneInput.addEventListener('focus', function(e) {
+        if (!e.target.value) {
+            e.target.value = '+7';
+        }
+    });
+}
+        
+        const togglePassword1 = document.querySelector('.toggle-password-1');
+        const togglePassword2 = document.querySelector('.toggle-password-2');
+        const passwordInput1 = document.getElementById('password');
+        const passwordInput2 = document.getElementById('password2');
+        
+        function setupPasswordToggle(toggleBtn, passwordField) {
+            if (toggleBtn && passwordField) {
+                toggleBtn.addEventListener('click', function() {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    
+                    const icon = this.querySelector('i');
+                    if (type === 'text') {
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+        }
+        
+        setupPasswordToggle(togglePassword1, passwordInput1);
+        setupPasswordToggle(togglePassword2, passwordInput2);
+        
+        const healthInfoBtn = document.getElementById('healthInfoBtn');
+        const healthInfoModal = document.getElementById('healthInfoModal');
+        const closeHealthModal = document.getElementById('closeHealthModal');
+        const closeHealthModalBtn = document.getElementById('closeHealthModalBtn');
+        
+        if (healthInfoBtn && healthInfoModal) {
+            healthInfoBtn.addEventListener('click', function() {
+                healthInfoModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            const closeHealthModalFunc = function() {
+                healthInfoModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+            
+            if (closeHealthModal) closeHealthModal.addEventListener('click', closeHealthModalFunc);
+            if (closeHealthModalBtn) closeHealthModalBtn.addEventListener('click', closeHealthModalFunc);
+            
+            healthInfoModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeHealthModalFunc();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && healthInfoModal.style.display === 'flex') {
+                    closeHealthModalFunc();
+                }
+            });
+        }
+        
+        const demoBtn = document.getElementById('demoBtn');
+        const demoModal = document.getElementById('demoModal');
+        const closeDemoModal = document.getElementById('closeDemoModal');
+        const closeDemoModalBtn = document.getElementById('closeDemoModalBtn');
+        
+        if (demoBtn && demoModal) {
+            demoBtn.addEventListener('click', function() {
+                demoModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            const closeDemoModalFunc = function() {
+                demoModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+            
+            if (closeDemoModal) closeDemoModal.addEventListener('click', closeDemoModalFunc);
+            if (closeDemoModalBtn) closeDemoModalBtn.addEventListener('click', closeDemoModalFunc);
+            
+            demoModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDemoModalFunc();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && demoModal.style.display === 'flex') {
+                    closeDemoModalFunc();
+                }
+            });
+        }
+        
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', function(e) {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const password2 = document.getElementById('password2').value;
+                
+                if (!name || !email || !password || !password2) {
+                    e.preventDefault();
+                    showFormError('Пожалуйста, заполните все обязательные поля!');
+                    return;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    e.preventDefault();
+                    showFormError('Пожалуйста, введите корректный email адрес!');
+                    return;
+                }
+                
+                if (password !== password2) {
+                    e.preventDefault();
+                    showFormError('Пароли не совпадают!');
+                    return;
+                }
+                
+                if (password.length < 8) {
+                    e.preventDefault();
+                    showFormError('Пароль должен содержать не менее 8 символов!');
+                    return;
+                }
+                
+                
+            });
+        }
+        
+        function showFormError(message) {
+            const formMessages = document.querySelector('.form-messages');
+            if (formMessages) {
+                formMessages.innerHTML = `
+                    <div class="alert alert-error">
+                        ${message}
+                    </div>
+                `;
+            }
+        }
+        
+        const nameField = document.getElementById('name');
+        if (nameField) {
+            nameField.focus();
+        }
+    });
+</script>
+{% endblock %}

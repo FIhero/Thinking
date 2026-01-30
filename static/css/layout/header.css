@@ -1,0 +1,23 @@
+.header {
+    background-color: var(--color-text-dark);
+    color: var(--text-light);
+    padding: var(--spacing-sm) 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px var(--shadow);
+}
+
+.header a {
+    color: var(--text-light); 
+}
+
+.header a:hover {
+    color: var(--color-card); 
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

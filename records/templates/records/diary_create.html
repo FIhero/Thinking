@@ -1,0 +1,880 @@
+{% extends "base.html" %}
+
+{% block title %}Новая запись{% endblock %}
+
+{% block content %}
+<div class="diary-create-page">
+    <div class="container">
+        <div class="create-header">
+            <div class="header-left">
+                <h1 class="create-title">
+                    <i class="fas fa-plus-circle"></i> Новая запись
+                </h1>
+                <p class="create-subtitle">𝑴𝒆𝒐𝒘. ฅ(•- •マ</p>
+            </div>
+            <div class="header-right">
+                <a href="{% url 'diary_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Назад к дневнику
+                </a>
+            </div>
+        </div>
+
+        <div class="create-card">
+            <form method="post" enctype="multipart/form-data" id="diaryCreateForm">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Пожалуйста, исправьте ошибки:</h4>
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.date.id_for_label }}" class="form-label">
+                        <i class="far fa-calendar-alt"></i> Дата
+                    </label>
+                    {{ form.date }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.mood.id_for_label }}" class="form-label">
+                        <i class="fas fa-smile"></i> Настроение
+                    </label>
+                    {{ form.mood }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}" class="form-label">
+                    <i class="fas fa-heading"></i> Заголовок
+                </label>
+                {{ form.title }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.text.id_for_label }}" class="form-label">
+                    <i class="fas fa-edit"></i> Запись
+                </label>
+                {{ form.text }}
+            </div>
+        </div>
+                    
+                <div class="form-section media-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-images"></i> Медиафайлы
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="{{ form.image_file.id_for_label }}" class="form-label">
+                            <i class="fas fa-image"></i> Изображение
+                        </label>
+                        {{ form.image_file }}
+                        {% if form.image_file.help_text %}
+                        <div class="form-hint">{{ form.image_file.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.music_link.id_for_label }}" class="form-label">
+                            <i class="fas fa-music"></i> Ссылка на музыку
+                        </label>
+                        {{ form.music_link }}
+                        {% if form.music_link.help_text %}
+                        <div class="form-hint">{{ form.music_link.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="media-container" id="mediaContainer">
+                        
+                    </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Сохранить запись
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Страница создания записи */
+    .diary-create-page {
+        padding: 30px 0;
+        background-color: #f2e5d2;
+        min-height: calc(100vh - 200px);
+    }
+    
+    /* Заголовок */
+    .create-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .header-left {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .create-title {
+        font-size: 2.5rem;
+        color: #7a3741;
+        margin-bottom: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .create-subtitle {
+        font-size: 1.2rem;
+        color: #b25c69;
+        opacity: 0.9;
+    }
+    
+    /* Основная карточка */
+    .create-card {
+        background-color: transparent;
+        border: 3px solid #cfa17d;
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+
+    .create-emotion {
+        background-color: transparent;
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+    
+    /* Секции формы */
+    .form-section {
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid rgba(207, 161, 125, 0.3);
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+        color: #7a3741;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        color: #b25c69;
+    }
+    
+    /* Строки формы */
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    /* Группы формы */
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 1rem;
+        color: #7a3741;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .media-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.btn-add-media {
+    background-color: var(--color-button);
+    color: var(--color-bg);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.btn-add-media:hover {
+    background-color: var(--color-text-dark);
+}
+
+.media-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    animation: fadeIn 0.3s ease;
+}
+
+.media-card input[type="file"],
+.media-card input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.btn-remove-media {
+    background: #ff6b6b;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+    
+    .form-label i {
+        margin-right: 8px;
+        color: #b25c69;
+    }
+    
+    /* Стили для полей формы Django */
+    .create-card input[type="text"],
+    .create-card input[type="url"],
+    .create-card input[type="date"],
+    .create-card select,
+    .create-card textarea {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #bb818a;
+        border-radius: 12px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+    
+    .create-card input:focus,
+    .create-card select:focus,
+    .create-card textarea:focus {
+        outline: none;
+        border-color: #7a3741;
+        box-shadow: 0 0 0 3px rgba(122, 55, 65, 0.1);
+    }
+    
+    .create-card input::placeholder,
+    .create-card textarea::placeholder {
+        color: #bb818a;
+        opacity: 0.7;
+    }
+    
+    .create-card textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+    
+    /* Стили для select */
+    .create-card select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%237a3741' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+    
+    /* Подсказки */
+    .form-hint {
+        font-size: 0.9rem;
+        color: #7a3741;
+        opacity: 0.7;
+        margin-top: 8px;
+        line-height: 1.4;
+    }
+    
+    /* Область загрузки файла */
+    .file-upload-area {
+        border: 3px dashed #bb818a;
+        border-radius: 15px;
+        padding: 30px 20px;
+        text-align: center;
+        background-color: rgba(187, 129, 138, 0.05);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .file-upload-area:hover {
+        border-color: #7a3741;
+        background-color: rgba(122, 55, 65, 0.05);
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+        color: #cfa17d;
+        margin-bottom: 15px;
+    }
+    
+    .upload-text {
+        color: #7a3741;
+        margin-bottom: 15px;
+        font-size: 1rem;
+    }
+    
+    .file-upload-area input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .file-info {
+        margin-top: 15px;
+        color: #7a3741;
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        background-color: rgba(207, 161, 125, 0.1);
+        border-radius: 8px;
+        display: none;
+    }
+    
+    /* Предпросмотр изображения */
+    .image-preview {
+        position: relative;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .image-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 15px;
+        border: 3px solid #cfa17d;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-remove-preview {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    .form-actions .btn-primary {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+    
+    .btn-remove-preview:hover {
+        background-color: #c82333;
+        transform: scale(1.1);
+    }
+    
+    /* Предпросмотр записи */
+    .mood-preview-section {
+        margin-bottom: 40px;
+    }
+    
+    .preview-card {
+        background-color: rgba(207, 161, 125, 0.1);
+        border: 2px solid #cfa17d;
+        border-radius: 15px;
+        padding: 25px;
+    }
+    
+    .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(207, 161, 125, 0.3);
+    }
+    
+    .preview-title {
+        font-size: 1.4rem;
+        color: #7a3741;
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .preview-mood {
+        font-size: 2rem;
+    }
+    
+    .preview-text {
+        color: #7a3741;
+        line-height: 1.6;
+        font-size: 1.05rem;
+        margin-bottom: 20px;
+        min-height: 100px;
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        white-space: pre-wrap;
+    }
+    
+    .preview-footer {
+        text-align: right;
+    }
+    
+    .preview-date {
+        color: #7a3741;
+        opacity: 0.7;
+        font-size: 0.9rem;
+        font-style: italic;
+    }
+    
+    /* Кнопки действий */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid rgba(207, 161, 125, 0.3);
+        flex-wrap: wrap;
+    }
+    
+    .form-actions .btn {
+        flex: 1;
+        min-width: 200px;
+        padding: 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .form-actions .btn-primary {
+        background: linear-gradient(to right, #b25c69, #bb818a);
+        color: #f2e5d2;
+    }
+    
+    .form-actions .btn-primary:hover {
+        background: linear-gradient(to right, #7a3741, #b25c69);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(122, 55, 65, 0.3);
+    }
+    
+    /* Сообщения об ошибках */
+    .alert {
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        border: 2px solid;
+    }
+    
+    .alert-error {
+        background-color: rgba(220, 53, 69, 0.1);
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    
+    .alert-error h4 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .alert-error ul {
+        margin: 10px 0 0 0;
+        padding-left: 20px;
+    }
+    
+    .alert-error li {
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 992px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions .btn {
+            min-width: 100%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .create-card {
+            padding: 30px 25px;
+        }
+        
+        .create-title {
+            font-size: 2rem;
+        }
+        
+        .create-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .diary-create-page {
+            padding: 20px 15px;
+        }
+        
+        .create-card {
+            padding: 25px 20px;
+            border-width: 2px;
+        }
+        
+        .create-title {
+            font-size: 1.8rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const addMediaBtn = document.getElementById('addMediaBtn');
+const mediaFields = document.getElementById('mediaFields');
+
+addMediaBtn.addEventListener('click', () => {
+    if(mediaFields.style.display === 'none') {
+        mediaFields.style.display = 'block';
+    } else {
+        mediaFields.style.display = 'none';
+    }
+});
+
+const mediaContainer = document.getElementById('mediaContainer');
+const addMediaBtns = document.querySelectorAll('.btn-add-media');
+
+addMediaBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        let card;
+
+        if(type === 'image') {
+            card = document.createElement('div');
+            card.classList.add('media-card');
+            card.innerHTML = `
+                <input type="file" name="image_file" accept="image/*">
+                <button type="button" class="btn-remove-media"><i class="fas fa-times"></i></button>
+            `;
+        } else if(type === 'music') {
+            card = document.createElement('div');
+            card.classList.add('media-card');
+            card.innerHTML = `
+                <input type="text" name="music_link" placeholder="Ссылка на музыку">
+                <button type="button" class="btn-remove-media"><i class="fas fa-times"></i></button>
+            `;
+        }
+
+        // Кнопка удаления
+        card.querySelector('.btn-remove-media').addEventListener('click', () => {
+            card.remove();
+        });
+
+        mediaContainer.appendChild(card);
+    });
+});
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Эмодзи для настроений (должно совпадать с бэкендом)
+        const moodEmojis = {
+            'happy': '😊',
+            'sad': '😢',
+            'excited': '🤩',
+            'angry': '😠',
+            'calm': '😌',
+            'anxious': '😰',
+            'tired': '😴',
+            'neutral': '😐',
+            'love': '😍',
+            'surprised': '😲'
+        };
+        
+        // Элементы формы
+        const titleInput = document.querySelector('#{{ form.title.id_for_label }}');
+        const textInput = document.querySelector('#{{ form.text.id_for_label }}');
+        const moodSelect = document.querySelector('#{{ form.mood.id_for_label }}');
+        const dateInput = document.querySelector('#{{ form.date.id_for_label }}');
+        const imageFileInput = document.querySelector('#{{ form.image_file.id_for_label }}');
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const selectImageBtn = document.getElementById('selectImageBtn');
+        const imageFileInfo = document.getElementById('imageFileInfo');
+        
+        // Элементы предпросмотра
+        const previewTitle = document.getElementById('previewTitle');
+        const previewText = document.getElementById('previewText');
+        const previewMood = document.getElementById('previewMood');
+        const previewDate = document.getElementById('previewDate');
+        
+        // Установка текущей даты по умолчанию
+        if (dateInput && !dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+        
+        // Обновление предпросмотра
+        function updatePreview() {
+            // Заголовок
+            if (titleInput && titleInput.value) {
+                previewTitle.textContent = titleInput.value;
+            } else {
+                previewTitle.textContent = 'Заголовок записи';
+            }
+            
+            // Текст
+            if (textInput && textInput.value) {
+                previewText.textContent = textInput.value;
+            } else {
+                previewText.textContent = 'Текст вашей записи появится здесь...';
+            }
+            
+            // Настроение
+            if (moodSelect && moodSelect.value) {
+                previewMood.textContent = moodEmojis[moodSelect.value] || '😐';
+            } else {
+                previewMood.textContent = '😐';
+            }
+            
+            // Дата
+            if (dateInput && dateInput.value) {
+                const date = new Date(dateInput.value);
+                previewDate.textContent = date.toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            }
+        }
+        
+        // Слушатели для обновления предпросмотра
+        if (titleInput) {
+            titleInput.addEventListener('input', updatePreview);
+        }
+        
+        if (textInput) {
+            textInput.addEventListener('input', updatePreview);
+        }
+        
+        if (moodSelect) {
+            moodSelect.addEventListener('change', updatePreview);
+        }
+        
+        if (dateInput) {
+            dateInput.addEventListener('change', updatePreview);
+        }
+        
+        // Загрузка изображения
+        if (imageFileInput && imageUploadArea) {
+            // Клик по области загрузки
+            imageUploadArea.addEventListener('click', function() {
+                imageFileInput.click();
+            });
+            
+            // Клик по кнопке выбора файла
+            if (selectImageBtn) {
+                selectImageBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    imageFileInput.click();
+                });
+            }
+            
+            // Обработка выбора файла
+            imageFileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    
+                    // Проверка типа файла
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Пожалуйста, выберите изображение в формате JPG, PNG, GIF или WebP');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Проверка размера файла (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Размер файла не должен превышать 5MB');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Показываем информацию о файле
+                    if (imageFileInfo) {
+                        imageFileInfo.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                        imageFileInfo.style.display = 'block';
+                    }
+                    
+                    // Показываем превью
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (previewImage) {
+                            previewImage.src = e.target.result;
+                        }
+                        if (imagePreview) {
+                            imagePreview.style.display = 'block';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Drag and drop
+            imageUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#7a3741';
+                this.style.backgroundColor = 'rgba(122, 55, 65, 0.05)';
+            });
+            
+            imageUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#bb818a';
+                this.style.backgroundColor = 'rgba(187, 129, 138, 0.05)';
+            });
+            
+            imageUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#bb818a';
+                this.style.backgroundColor = 'rgba(187, 129, 138, 0.05)';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    imageFileInput.files = e.dataTransfer.files;
+                    const event = new Event('change');
+                    imageFileInput.dispatchEvent(event);
+                }
+            });
+        }
+        
+        // Удаление превью изображения
+        if (removeImageBtn) {
+            removeImageBtn.addEventListener('click', function() {
+                if (imageFileInput) {
+                    imageFileInput.value = '';
+                }
+                if (imagePreview) {
+                    imagePreview.style.display = 'none';
+                }
+                if (imageFileInfo) {
+                    imageFileInfo.style.display = 'none';
+                }
+            });
+        }
+        
+        // Кнопка сохранения черновика
+        const saveDraftBtn = document.getElementById('saveDraftBtn');
+        if (saveDraftBtn) {
+            saveDraftBtn.addEventListener('click', function() {
+                // Здесь можно добавить логику сохранения черновика
+                alert('Функция черновиков скоро будет доступна');
+            });
+        }
+        
+        // Валидация формы
+        const diaryCreateForm = document.getElementById('diaryCreateForm');
+        if (diaryCreateForm) {
+            diaryCreateForm.addEventListener('submit', function(e) {
+                // Базовая валидация
+                if (titleInput && !titleInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Пожалуйста, введите заголовок записи');
+                    titleInput.focus();
+                    return;
+                }
+                
+                if (textInput && !textInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Пожалуйста, введите текст записи');
+                    textInput.focus();
+                    return;
+                }
+                
+                // Показываем анимацию загрузки
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+                    submitBtn.disabled = true;
+                    
+                    // Если форма не отправится через 10 секунд, вернуть кнопку
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 10000);
+                }
+            });
+        }
+        
+        // Автофокус на заголовке
+        if (titleInput) {
+            titleInput.focus();
+        }
+        
+        // Инициализация предпросмотра
+        updatePreview();
+        
+        console.log('Diary create page loaded');
+    });
+</script>
+{% endblock %}

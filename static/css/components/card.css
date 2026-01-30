@@ -1,0 +1,66 @@
+.card {
+    background-color: var(--color-card);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: 0 5px 15px var(--shadow);
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.card {
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    transition: all 0.3s ease;
+}
+
+.card--filled {
+    background-color: var(--color-card);
+    color: var(--text-light);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+.card--outline {
+    background-color: transparent;
+    border: 3px solid var(--color-card);
+    color: var(--color-text-dark);
+}
+
+.card:hover {
+    box-shadow: 0 10px 30px var(--shadow);
+    transform: translateY(-5px);
+}
+
+.card-outline {
+    background-color: transparent;
+    border: 3px solid var(--color-card);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: 0 2px 10px var(--shadow);
+    color: var(--color-text-dark);
+    transition: all 0.3s ease;
+}
+
+.card-outline:hover {
+    box-shadow: 0 5px 20px var(--shadow);
+    transform: translateY(-3px);
+    border-color: var(--color-text-dark);
+}
+
+.card-header {
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 2px solid rgba(242, 229, 210, 0.3);
+}
+
+.card-body {
+    padding: var(--spacing-md) 0;
+}
+
+.card-footer {
+    padding-top: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    border-top: 2px solid rgba(242, 229, 210, 0.3);
+}

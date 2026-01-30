@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}Редактировать профиль{% endblock %}
+
+{% block content %}
+<div class="edit-profile-page">
+    <div class="container">
+        <div class="edit-header">
+            <h1 class="edit-title">Редактировать профиль</h1>
+            <p class="edit-subtitle">꒷꒦︶꒷꒦︶ ๋ ࣭ ⭑꒷꒦⋆⭒˚.⋆·:*¨ ✮ ¨*:· ⋆⭒˚.⋆꒦꒷⭑  ๋ ︶꒦꒷︶꒦꒷</p>
+        </div>
+
+        <div class="edit-card card-outline">
+            <form method="post" enctype="multipart/form-data" id="editProfileForm">
+                {% csrf_token %}
+                
+                {% if messages %}
+                <div class="form-messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                
+                <div class="edit-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i> Основная информация
+                    </h3>
+                    
+                    <div class="form-grid">
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email адрес</label>
+                            <input type="email" id="email" name="email" 
+                                   class="form-input"
+                                   value="{{ user.email }}"
+                                   required>
+                        </div>
+                        
+<div class="form-group">
+    <label for="phone" class="form-label">Телефон</label>
+    <input type="tel" id="phone" name="phone" 
+           class="form-input"
+           value="{{ user.phone|default:'' }}"
+           placeholder="+7 (___) ___-__-__">
+</div>
+                        
+                    </div>
+                </div>
+                
+                <div class="edit-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-key"></i> Безопасность (Демо)
+                    </h3>
+                    
+                    <div class="password-section">
+                        <div class="form-group">
+                            <label for="current_password" class="form-label">Текущий пароль</label>
+                            <input type="password" id="current_password" name="current_password" 
+                                   class="form-input"
+                                   placeholder="Введите текущий пароль для подтверждения изменений" disabled>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="new_password" class="form-label">Новый пароль</label>
+                                <input type="password" id="new_password" name="new_password" 
+                                       class="form-input"
+                                       placeholder="Введите новый пароль" disabled>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_password" class="form-label">Подтвердите пароль</label>
+                                <input type="password" id="confirm_password" name="confirm_password" 
+                                       class="form-input"
+                                       placeholder="Повторите новый пароль" disabled>
+                            </div>
+                        </div>
+                        
+                        <div class="password-hint">
+                            <i class="fas fa-info-circle"></i> Смена пароля находится в разработке
+                        </div>
+                
+                <div class="edit-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                    
+                    <a href="{% url 'profile' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Отмена
+                    </a>
+                    
+                    <a href="{% url 'profile_delete' %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Удалить аккаунт
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.edit-profile-page {
+    padding: 30px 0;
+    background-color: #f2e5d2;
+    min-height: calc(100vh - 200px);
+}
+
+.edit-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.edit-title {
+    font-size: 2.2rem;
+    color: #7a3741;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.edit-subtitle {
+    font-size: 1.1rem;
+    color: #b25c69;
+    opacity: 0.9;
+}
+
+.edit-card {
+    background-color: transparent;
+    border: 3px solid #cfa17d;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.edit-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid rgba(207, 161, 125, 0.3);
+}
+
+.edit-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    color: #7a3741;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: #b25c69;
+}
+
+/* Секция аватара */
+.avatar-edit-section {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.current-avatar {
+    flex-shrink: 0;
+}
+
+.avatar-current {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #cfa17d;
+}
+
+.avatar-upload {
+    flex: 1;
+}
+
+.upload-area {
+    border: 3px dashed #bb818a;
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    background-color: rgba(187, 129, 138, 0.05);
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #7a3741;
+    background-color: rgba(122, 55, 65, 0.05);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: #cfa17d;
+    margin-bottom: 15px;
+}
+
+.upload-text {
+    color: #7a3741;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.upload-hint {
+    font-size: 0.9rem;
+    color: #7a3741;
+    opacity: 0.7;
+    margin-top: 10px;
+}
+
+.avatar-preview {
+    text-align: center;
+    padding: 20px;
+}
+
+.avatar-preview img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #cfa17d;
+}
+
+/* Формы */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Кнопки действий */
+.edit-actions {
+    display: flex;
+    justify-self: center;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid rgba(207, 161, 125, 0.3);
+    flex-wrap: wrap;
+}
+
+.edit-actions .btn {
+    min-width: 200px;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-danger:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Сообщения */
+.form-messages {
+    margin-bottom: 30px;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 2px solid;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: #28a745;
+    color: #155724;
+}
+
+.alert-error, .alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-color: #17a2b8;
+    color: #0c5460;
+}
+
+/* Подсказка пароля */
+.password-hint {
+    background-color: rgba(207, 161, 125, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    color: #7a3741;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.password-hint i {
+    color: #cfa17d;
+}
+
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #bb818a;
+        border-radius: 10px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .avatar-edit-section {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .edit-actions .btn {
+        min-width: 100%;
+    }
+    
+    .edit-card {
+        padding: 20px;
+    }
+    
+    .edit-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-profile-page {
+        padding: 20px 15px;
+    }
+    
+    .form-grid,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const selectBtn = document.getElementById('selectAvatarBtn');
+    const fileInput = document.getElementById('avatarFile');
+    const preview = document.getElementById('avatarPreview');
+    const previewImg = document.getElementById('previewImage');
+
+    selectBtn.addEventListener('click', () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+    });
+</script>
+{% endblock %}

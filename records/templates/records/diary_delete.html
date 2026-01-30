@@ -1,0 +1,756 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}THINCKING - Удаление записи{% endblock %}
+
+{% block content %}
+<div class="delete-diary-page">
+    <div class="container">
+        <div class="delete-header">
+            <h1 class="delete-title">
+                <i class="fas fa-trash-alt"></i> Удаление записи
+            </h1>
+            <p class="delete-subtitle">«{{ diary.title }}»</p>
+        </div>
+
+        <div class="delete-card card-outline">
+            <div class="warning-section">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="warning-content">
+                    <h3>После удаления записи:</h3>
+                    
+                    <ul class="warning-list">
+                        <li><i class="fas fa-times"></i> Запись будет удалена без возможности восстановления</li>
+                        <li><i class="fas fa-calendar-alt"></i> Информация о настроении в этот день будет утеряна</li>
+                        <li><i class="fas fa-history"></i> История ваших размышлений станет неполной</li>
+                        <li><i class="fas fa-undo"></i> Это действие нельзя отменить</li>
+                    </ul>
+                </div>
+            </div>
+
+                <form method="post" id="deleteForm">
+                    {% csrf_token %}
+                    
+                    <div class="delete-actions">
+                        <button type="submit" class="btn btn-danger" id="deleteButton">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                        
+                        <a href="{% url 'diary_detail' pk=diary.pk %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Страница удаления записи */
+    .delete-diary-page {
+        padding: 30px 0;
+        background-color: #f2e5d2;
+        min-height: calc(100vh - 200px);
+    }
+    
+    /* Заголовок */
+    .delete-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .delete-title {
+        font-size: 2.5rem;
+        color: #dc3545;
+        margin-bottom: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .delete-subtitle {
+        font-size: 1.5rem;
+        color: #7a3741;
+        font-style: italic;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* Основная карточка */
+    .delete-card {
+        background-color: transparent;
+        border: 3px solid #dc3545;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.1);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Секция предупреждения */
+    .warning-section {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+        margin-bottom: 40px;
+        padding: 30px;
+        background-color: rgba(220, 53, 69, 0.05);
+        border-radius: 15px;
+        border-left: 5px solid #dc3545;
+    }
+    
+    .warning-icon {
+        flex-shrink: 0;
+        width: 80px;
+        height: 80px;
+        background-color: #dc3545;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+    }
+    
+    .warning-content h3 {
+        font-size: 1.5rem;
+        color: #dc3545;
+        margin-bottom: 20px;
+    }
+    
+    .warning-content p {
+        color: #7a3741;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .warning-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .warning-list li {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 12px;
+        color: #7a3741;
+        font-size: 1rem;
+    }
+    
+    .warning-list li i {
+        color: #dc3545;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    
+    /* Информация о записи */
+    .diary-info {
+        background-color: rgba(207, 161, 125, 0.1);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 40px;
+        border: 2px solid #cfa17d;
+    }
+    
+    .diary-info h3 {
+        font-size: 1.3rem;
+        color: #7a3741;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        min-height: 50px;
+    }
+    
+    .info-label {
+        color: #7a3741;
+        opacity: 0.8;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+    
+    .info-value {
+        color: #7a3741;
+        font-weight: 600;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-word;
+    }
+    
+    /* Иконки настроения */
+    .mood-excellent { color: #28a745; }
+    .mood-good { color: #20c997; }
+    .mood-normal { color: #17a2b8; }
+    .mood-bad { color: #ffc107; }
+    .mood-terrible { color: #dc3545; }
+    
+    /* Теги */
+    .tag {
+        display: inline-block;
+        padding: 4px 12px;
+        background-color: rgba(207, 161, 125, 0.3);
+        color: #7a3741;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin: 2px 4px;
+        border: 1px solid #cfa17d;
+    }
+    
+    /* Превью контента */
+    .content-preview {
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid rgba(207, 161, 125, 0.5);
+    }
+    
+    .content-preview h4 {
+        font-size: 1.1rem;
+        color: #7a3741;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .preview-text {
+        color: #7a3741;
+        line-height: 1.6;
+        max-height: 200px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+    
+    .preview-text::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .preview-text::-webkit-scrollbar-track {
+        background: rgba(207, 161, 125, 0.2);
+        border-radius: 3px;
+    }
+    
+    .preview-text::-webkit-scrollbar-thumb {
+        background: #cfa17d;
+        border-radius: 3px;
+    }
+    
+    /* Форма */
+    .delete-form {
+        margin-top: 30px;
+    }
+    
+    .confirm-section {
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid rgba(220, 53, 69, 0.2);
+    }
+    
+    .confirm-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .confirm-section h3 {
+        font-size: 1.2rem;
+        color: #7a3741;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    /* Выпадающий список */
+    select.form-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%237a3741' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 18px center;
+        background-size: 16px;
+        padding-right: 50px;
+        cursor: pointer;
+    }
+    
+    /* Чекбоксы подтверждения */
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .confirm-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .confirm-checkbox:hover {
+        background-color: rgba(220, 53, 69, 0.05);
+        border-color: #dc3545;
+    }
+    
+    .confirm-checkbox input[type="checkbox"] {
+        display: none;
+    }
+    
+    .checkmark {
+        width: 24px;
+        height: 24px;
+        border: 2px solid #dc3545;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .confirm-checkbox input:checked + .checkmark {
+        background-color: #dc3545;
+    }
+    
+    .confirm-checkbox input:checked + .checkmark::after {
+        content: '✓';
+        color: white;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    
+    .checkbox-text {
+        color: #7a3741;
+        font-weight: 600;
+        font-size: 1rem;
+        flex: 1;
+    }
+    
+    /* Поля формы */
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 1rem;
+        color: #7a3741;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #bb818a;
+        border-radius: 12px;
+        background-color: #f2e5d2;
+        color: #7a3741;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #7a3741;
+        box-shadow: 0 0 0 3px rgba(122, 55, 65, 0.1);
+    }
+    
+    .form-input::placeholder {
+        color: #bb818a;
+        opacity: 0.7;
+    }
+    
+    /* Кнопки */
+    .delete-actions {
+        display: flex;
+        gap: 20px;
+        margin: 40px 0;
+        padding-top: 30px;
+        border-top: 2px solid rgba(220, 53, 69, 0.3);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .delete-actions .btn {
+        flex: 1;
+        min-width: 200px;
+        padding: 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(to right, #dc3545, #c82333);
+        color: white;
+        order: 1;
+    }
+    
+    .btn-danger:hover {
+        background: linear-gradient(to right, #c82333, #bd2130);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(to right, #bb818a, #cfa17d);
+        color: white;
+        order: 2;
+    }
+    
+    .btn-secondary:hover {
+        background: linear-gradient(to right, #a86d76, #bb8a6a);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(122, 55, 65, 0.3);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(to right, #6c757d, #5a6268);
+        color: white;
+        order: 3;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(to right, #5a6268, #4e555b);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(108, 117, 125, 0.3);
+    }
+    
+    /* Последний шанс */
+    .last-chance {
+        text-align: center;
+        padding: 25px;
+        background-color: rgba(207, 161, 125, 0.1);
+        border-radius: 15px;
+        margin-top: 30px;
+        border: 2px dashed #cfa17d;
+    }
+    
+    .last-chance p {
+        color: #7a3741;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .last-chance i {
+        color: #cfa17d;
+        font-size: 1.2rem;
+    }
+    
+    .last-chance a {
+        color: #b25c69;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .last-chance a:hover {
+        color: #7a3741;
+        text-decoration: underline;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 992px) {
+        .warning-section {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .warning-icon {
+            margin: 0 auto;
+        }
+        
+        .warning-list li {
+            justify-content: flex-start;
+            text-align: left;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .delete-actions {
+            flex-direction: column;
+        }
+        
+        .delete-actions .btn {
+            min-width: 100%;
+            order: initial !important;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .delete-card {
+            padding: 30px 25px;
+        }
+        
+        .delete-title {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .delete-subtitle {
+            font-size: 1.2rem;
+            padding: 0 15px;
+        }
+        
+        .diary-info {
+            padding: 20px;
+        }
+        
+        .content-preview {
+            padding: 15px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .delete-diary-page {
+            padding: 20px 15px;
+        }
+        
+        .delete-card {
+            padding: 25px 20px;
+            border-width: 2px;
+        }
+        
+        .warning-section {
+            padding: 20px;
+        }
+        
+        .warning-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+        }
+        
+        .confirm-checkbox {
+            padding: 15px;
+        }
+        
+        .checkbox-text {
+            font-size: 0.9rem;
+        }
+        
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        
+        .info-value {
+            max-width: 100%;
+            text-align: left;
+        }
+        
+        .last-chance p {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButton = document.getElementById('deleteButton');
+        const checkboxes = document.querySelectorAll('.confirm-checkbox input[type="checkbox"]');
+        const finalConfirmInput = document.getElementById('finalConfirm');
+        const deleteForm = document.getElementById('deleteForm');
+        const reasonSelect = document.getElementById('reason');
+        
+        // Иконки для настроений (если нужно расширить модель)
+        const moodIcons = {
+            'excellent': 'fa-laugh-beam',
+            'good': 'fa-smile',
+            'normal': 'fa-meh',
+            'bad': 'fa-frown',
+            'terrible': 'fa-sad-tear'
+        };
+        
+        // Проверка всех условий для активации кнопки удаления
+        function checkDeleteConditions() {
+            // Все чекбоксы должны быть отмечены
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            // Финальное подтверждение должно быть правильным
+            const finalText = finalConfirmInput.value.trim().toUpperCase();
+            const finalCorrect = finalText === 'УДАЛИТЬ ЗАПИСЬ';
+            
+            // Активировать/деактивировать кнопку
+            deleteButton.disabled = !(allChecked && finalCorrect);
+            
+            // Визуальная обратная связь для финального подтверждения
+            if (finalConfirmInput.value.trim() && !finalCorrect) {
+                finalConfirmInput.style.borderColor = '#dc3545';
+                finalConfirmInput.style.backgroundColor = 'rgba(220, 53, 69, 0.05)';
+            } else if (finalCorrect) {
+                finalConfirmInput.style.borderColor = '#28a745';
+                finalConfirmInput.style.backgroundColor = 'rgba(40, 167, 69, 0.05)';
+            } else {
+                finalConfirmInput.style.borderColor = '#bb818a';
+                finalConfirmInput.style.backgroundColor = '#f2e5d2';
+            }
+        }
+        
+        // Слушатели событий
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', checkDeleteConditions);
+        });
+        
+        finalConfirmInput.addEventListener('input', checkDeleteConditions);
+        reasonSelect.addEventListener('change', function() {
+            // Можно добавить логику отслеживания причин удаления
+            console.log('Причина удаления:', this.value);
+        });
+        
+        // Обработка отправки формы
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Финальная проверка
+                if (deleteButton.disabled) {
+                    alert('Пожалуйста, выполните все условия подтверждения');
+                    return;
+                }
+                
+                // Последнее предупреждение
+                const diaryTitle = "{{ diary.title|escapejs }}";
+                const finalWarning = confirm(
+                    'ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ!\n\n' +
+                    'Вы уверены, что хотите удалить запись?\n' +
+                    'Заголовок: ' + diaryTitle + '\n' +
+                    'Дата: {{ diary.created_at|date:"d.m.Y" }}\n\n' +
+                    'Это действие НЕЛЬЗЯ отменить.\n' +
+                    'Запись будет удалена без возможности восстановления.\n\n' +
+                    'Нажмите ОК для удаления или Отмена для отмены.'
+                );
+                
+                if (!finalWarning) {
+                    alert('Удаление отменено. Ваша запись сохранена.');
+                    return;
+                }
+                
+                // Показать анимацию загрузки
+                const originalText = deleteButton.innerHTML;
+                deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
+                deleteButton.disabled = true;
+                
+                // Отправить форму
+                setTimeout(() => {
+                    deleteForm.submit();
+                }, 1000);
+            });
+        }
+        
+        // Анимация появления элементов
+        const warningSection = document.querySelector('.warning-section');
+        const diaryInfo = document.querySelector('.diary-info');
+        const confirmSections = document.querySelectorAll('.confirm-section');
+        
+        if (warningSection) {
+            warningSection.style.opacity = '0';
+            warningSection.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                warningSection.style.transition = 'all 0.5s ease';
+                warningSection.style.opacity = '1';
+                warningSection.style.transform = 'translateY(0)';
+            }, 100);
+        }
+        
+        if (diaryInfo) {
+            diaryInfo.style.opacity = '0';
+            diaryInfo.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                diaryInfo.style.transition = 'all 0.5s ease';
+                diaryInfo.style.opacity = '1';
+                diaryInfo.style.transform = 'translateY(0)';
+            }, 200);
+        }
+        
+        confirmSections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                section.style.transition = 'all 0.5s ease';
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, 300 + (index * 200));
+        });
+        
+        // Автоматический скролл к форме при загрузке
+        setTimeout(() => {
+            if (deleteForm && window.innerWidth > 768) {
+                deleteForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
+        
+        // Фокус на первом чекбоксе
+        if (checkboxes.length > 0) {
+            checkboxes[0].focus();
+        }
+    });
+</script>
+{% endblock %}
