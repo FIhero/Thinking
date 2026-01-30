@@ -42,10 +42,40 @@ class DiaryUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     form_class = DiaryUpdateForm
     template_name = "records/diary_update.html"
 
+    def get_success_url(self):
+        return reverse("diary_detail", kwargs={"pk": self.object.pk})
+
 
 class DiaryDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
     model = Diary
     template_name = "records/diary_detail.html"
+
+    def get_context_data(self, **kwargs):
+        """Добавляем предыдущую и следующую записи для навигации"""
+        context = super().get_context_data(**kwargs)
+        diary = self.get_object()
+
+        previous_entry = (
+            Diary.objects.filter(
+                owner=self.request.user,
+                created_at__lt=diary.created_at
+            )
+            .order_by("-created_at")
+            .first()
+        )
+
+        next_entry = (
+            Diary.objects.filter(
+                owner=self.request.user,
+                created_at__gt=diary.created_at
+            )
+            .order_by("created_at")
+            .first()
+        )
+
+        context["previous_entry"] = previous_entry
+        context["next_entry"] = next_entry
+        return context
 
 
 class DiaryListView(LoginRequiredMixin, ListView):

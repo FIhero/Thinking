@@ -1,0 +1,13 @@
+.footer {
+    background-color: var(--color-text-dark);
+    color: var(--text-light);
+    padding: var(--spacing-lg) 0;
+    margin-top: auto;
+    text-align: center;
+}
+
+.footer p {
+    margin-bottom: 0;
+    opacity: 0.9;
+    color: var(--text-light);
+}

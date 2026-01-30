@@ -139,7 +139,7 @@ class TestHomeView:
     @pytest.mark.django_db
     def test_home_view(self, client):
         """Тест доступа к главной странице"""
-        response = client.get("/records/")
+        response = client.get("/")
         assert response.status_code == 200
 
         if hasattr(response, "context") and "title" in response.context:
@@ -160,13 +160,13 @@ class TestDiaryCreateView:
     @pytest.mark.django_db
     def test_create_view_requires_login(self, client):
         """Тест требования авторизации"""
-        response = client.get("/records/create/")
+        response = client.get("/create/")
         assert response.status_code == 302
 
     @pytest.mark.django_db
     def test_get_create_form(self, authenticated_client):
         """Тест получения формы создания"""
-        response = authenticated_client.get("/records/create/")
+        response = authenticated_client.get("/create/")
         assert response.status_code == 200
 
     @pytest.mark.django_db
@@ -182,7 +182,7 @@ class TestDiaryCreateView:
         initial_count = Diary.objects.count()
 
         try:
-            authenticated_client.post("/records/create/", data)
+            authenticated_client.post("/create/", data)
 
             assert Diary.objects.count() == initial_count + 1
 
@@ -222,7 +222,7 @@ class TestDiaryListView:
     @pytest.mark.django_db
     def test_list_view_requires_login(self, client):
         """Тест требования авторизации для списка"""
-        response = client.get("/records/list/")
+        response = client.get("/list/")
         assert response.status_code == 302
 
     @pytest.mark.django_db
@@ -237,7 +237,7 @@ class TestDiaryListView:
         )
 
         client.force_login(user_with_diaries)
-        response = client.get("/records/list/")
+        response = client.get("/list/")
 
         assert response.status_code == 200
         if "object_list" in response.context:
@@ -263,7 +263,7 @@ class TestDiaryDetailView:
     @pytest.mark.django_db
     def test_detail_view_requires_login(self, client, diary):
         """Тест требования авторизации"""
-        response = client.get(f"/records/{diary.pk}/")
+        response = client.get(f"/{diary.pk}/")
         assert response.status_code == 302
 
     @pytest.mark.django_db
@@ -274,7 +274,7 @@ class TestDiaryDetailView:
 
         try:
             client.force_login(diary.owner)
-            response = client.get(f"/records/{diary.pk}/")
+            response = client.get(f"/{diary.pk}/")
             status_code = response.status_code
 
             if status_code == 200:
@@ -298,7 +298,7 @@ class TestDiaryDetailView:
 
         try:
             client.force_login(other_user)
-            response = client.get(f"/records/{diary.pk}/")
+            response = client.get(f"/{diary.pk}/")
 
             assert response.status_code in [403, 404, 302]
 
@@ -326,7 +326,7 @@ class TestDiaryUpdateView:
     @pytest.mark.django_db
     def test_update_view_requires_login(self, client, diary):
         """Тест требования авторизации"""
-        response = client.get(f"/records/{diary.pk}/update/")
+        response = client.get(f"/{diary.pk}/update/")
         assert response.status_code == 302
 
     @pytest.mark.django_db
@@ -342,7 +342,7 @@ class TestDiaryUpdateView:
                 "mood": 2,
             }
 
-            client.post(f"/records/{diary.pk}/update/", data)
+            client.post(f"/{diary.pk}/update/", data)
 
             diary.refresh_from_db()
 
@@ -384,5 +384,5 @@ class TestDiaryDeleteView:
     @pytest.mark.django_db
     def test_delete_view_requires_login(self, client, diary):
         """Тест требования авторизации"""
-        response = client.get(f"/records/{diary.pk}/delete/")
+        response = client.get(f"/{diary.pk}/delete/")
         assert response.status_code == 302

@@ -57,7 +57,7 @@
                 <div class="diary-entry" data-entry-id="{{ entry.id }}">
                     <div class="entry-date">
                         <div class="date-day">{{ entry.date|date:"d" }}</div>
-                        <div class="date-mounth">{{ entry.date|date:"M"|lower }}</div>
+                        <div class="date-month">{{ entry.date|date:"M"|lower }}</div>
                         <div class="date-year">{{ entry.date|date:"Y" }}</div>
                     </div>
                     
@@ -70,12 +70,6 @@
                         
                         <div class="entry-body">
                             <p class="entry-text">{{ entry.text|truncatechars:300 }}</p>
-                            
-                            {% if entry.text|length > 300 %}
-                            <button type="button" class="btn-read-more" ="{{ entry.id }}">
-                                Читать полностью <i class="fas fa-chevron-right"></i>
-                            </button>
-                            {% endif %}
                         </div>
                         
                         <div class="entry-footer">
