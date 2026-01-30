@@ -45,7 +45,7 @@
                 </div>
                 
                 <div class="stats-badge">
-                    <span class="stats-count">{{ entries.count|default:"0" }}</span>
+                    <span class="stats-count">{{ page_obj.paginator.count|default:"0" }}</span>
                     <span class="stats-label">записей</span>
                 </div>
             </div>
@@ -121,27 +121,27 @@
             {% endif %}
         </div>
 
-        {% if entries.has_other_pages %}
+        {% if page_obj.has_other_pages %}
         <div class="diary-pagination">
             <nav class="pagination-nav">
-                {% if entries.has_previous %}
-                <a href="?page={{ entries.previous_page_number }}" class="pagination-link prev">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link prev">
                     <i class="fas fa-chevron-left"></i> Назад
                 </a>
                 {% endif %}
                 
                 <div class="pagination-pages">
-                    {% for num in entries.paginator.page_range %}
-                        {% if entries.number == num %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
                         <span class="pagination-page active">{{ num }}</span>
-                        {% elif num > entries.number|add:'-3' and num < entries.number|add:'3' %}
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                         <a href="?page={{ num }}" class="pagination-page">{{ num }}</a>
                         {% endif %}
                     {% endfor %}
                 </div>
                 
-                {% if entries.has_next %}
-                <a href="?page={{ entries.next_page_number }}" class="pagination-link next">
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="pagination-link next">
                     Вперед <i class="fas fa-chevron-right"></i>
                 </a>
                 {% endif %}

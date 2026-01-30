@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 
+from records.models import Diary
 from users.forms import CustomAuthenticationForm, CustomUserCreationForm, UserUpdateForm
 from users.models import User
 
@@ -35,6 +36,14 @@ class ProfileView(LoginRequiredMixin, DetailView):
 
     def get_object(self):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+
+        context['diary_count'] = Diary.objects.filter(owner=user).count()
+
+        return context
 
 
 class UpdateProfile(LoginRequiredMixin, UpdateView):

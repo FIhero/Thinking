@@ -9,10 +9,10 @@
         <p class="tagline">Платформа для осознанной жизни</p>
         {% if not user.is_authenticated %}
             <div class="auth-buttons">
-                <a href="{% url 'login' %}" class="btn btn-login">
+                <a href="{% url 'login' %}" class="btn">
                     <i class="fas fa-sign-in-alt"></i> Войти
                 </a>
-                <a href="{% url 'register' %}" class="btn btn-register">
+                <a href="{% url 'register' %}" class="btn">
                     <i class="fas fa-user-plus"></i> Регистрация
                 </a>
             </div>
